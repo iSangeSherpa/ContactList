@@ -12,24 +12,21 @@ import RxCocoa
 import RxSwift
 
 class Contact: Object {
-    @objc dynamic var _id = ObjectId.generate()
-    @objc dynamic var name = ""
-    @objc dynamic var phone = ""
+    @Persisted(primaryKey: true) var _id: ObjectId
+    @Persisted var name = ""
+    @Persisted var phone = ""
     
     convenience init(name: String = "", phone: String = "") {
         self.init()
         self.name = name
         self.phone = phone
     }
-    
-    override class func primaryKey() -> String? {
-        return "_id"
-    }
 }
 
 
 class ViewController: UIViewController {
     
+    var notificationToken: NotificationToken?
     let realm = try! Realm()
     
     var people = [
@@ -50,9 +47,10 @@ class ViewController: UIViewController {
     
     var button: UIButton = {
         var btn = UIButton()
-        btn.setTitle("Edit", for: .normal)
+        btn.setTitle("Add Contact", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .black
+        btn.layer.cornerRadius = 3
         return btn
     }()
     
@@ -63,7 +61,6 @@ class ViewController: UIViewController {
         }
         
         setup()
-        realmConfig()
     }
     
     
@@ -72,72 +69,72 @@ class ViewController: UIViewController {
         view.addSubview(table)
         view.addSubview(button)
         
-        button.addTarget(self, action: #selector(editTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addContactTapped), for: .touchUpInside)
         
         table.snp.makeConstraints { make in
             make.left.top.right.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalToSuperview().offset(-300)
+            make.bottom.equalToSuperview().offset(-100)
         }
         button.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(table.snp.bottom).offset(100)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-50)
             make.width.equalTo(300)
         }
-    }
-    
-    @objc func editTapped() {
-        if table.isEditing == true {
-            table.isEditing = false
-        } else {
-            table.isEditing = true
-        }
-    }
-    
-    
-    private func realmConfig() {
-        try! realm.write {
-            for contact in people {
-                realm.add(contact)
+
+
+        let results = self.realm.objects(Contact.self)
+        self.notificationToken = results.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let table = self?.table else { return }
+
+            switch changes {
+                case .initial:
+                    table.reloadData()
+                case .update(_, let deletions, let insertions, let modifications):
+                    table.performBatchUpdates({
+                        table.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0) }),
+                                         with: .automatic)
+                        table.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                         with: .automatic)
+                        table.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                         with: .automatic)
+                    }, completion: { finished in
+                        print(finished)
+                    })
+                case .error(let error):
+                    fatalError("\(error)")
             }
         }
     }
 
-}
 
-
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return people.count }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CustomTableViewCell.identifier, for: indexPath) as! CustomTableViewCell
-        let currentPerson = people[indexPath.row]
-        cell.titleLabel.text = currentPerson.name
-        cell.metaLabel.text = currentPerson.phone
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            tableView.beginUpdates()
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            tableView.endUpdates()
+    @objc func addContactTapped() {
+        let alert = UIAlertController(title: "Add Contact", message: nil, preferredStyle: .alert)
+        alert.addTextField { newTextField in
+            newTextField.placeholder = "Name"
         }
+        alert.addTextField { newTextField in
+            newTextField.placeholder = "+977"
+            newTextField.keyboardType = .numberPad
+        }
+        
+        alert.addAction(UIAlertAction(title: "Add", style: .default) { _ in
+            guard let nameField = alert.textFields?.first,
+                  let phoneField = alert.textFields?.last else { return }
+            
+            let newContact = Contact(name: nameField.text!, phone: phoneField.text!)
+            self.people.append(newContact)
+            
+            try! self.realm.write {
+                self.realm.add(newContact)
+                self.table.reloadData()
+            }
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default) { _ in
+            alert.dismiss(animated: true)
+        })
+        
+        present(alert, animated: true)
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { return 80 }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle { return .delete }
-    
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return true }
-    
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        people.swapAt(sourceIndexPath.row, destinationIndexPath.row)
-    }
-    
     
 }

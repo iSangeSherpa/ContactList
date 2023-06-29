@@ -14,6 +14,7 @@
 		50A35FB32A4ABBA20068D0FC /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 50A35FB22A4ABBA20068D0FC /* Realm */; };
 		50A35FB52A4ABBA20068D0FC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 50A35FB42A4ABBA20068D0FC /* RealmSwift */; };
 		50A35FB72A4ABBD50068D0FC /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A35FB62A4ABBD50068D0FC /* CustomTableViewCell.swift */; };
+		50FC88D32A4C1D7B005A7D21 /* ViewController-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FC88D22A4C1D7B005A7D21 /* ViewController-Extension.swift */; };
 		FEEFDC26A11A8308ACCC5D48 /* Pods_ContactList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E0080675CEB0C8E7B2C9E6B /* Pods_ContactList.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		50A35FA62A4AB6D90068D0FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		50A35FAB2A4AB6D90068D0FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50A35FB62A4ABBD50068D0FC /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		50FC88D22A4C1D7B005A7D21 /* ViewController-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController-Extension.swift"; sourceTree = "<group>"; };
 		74DD94BD7E591FCF426473A0 /* Pods-ContactList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContactList.debug.xcconfig"; path = "Target Support Files/Pods-ContactList/Pods-ContactList.debug.xcconfig"; sourceTree = "<group>"; };
 		8E0080675CEB0C8E7B2C9E6B /* Pods_ContactList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ContactList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6111CAF2734744FD223F9F8 /* Pods-ContactList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContactList.release.xcconfig"; path = "Target Support Files/Pods-ContactList/Pods-ContactList.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				50A35F9F2A4AB6D70068D0FC /* SceneDelegate.swift */,
 				50A35FB62A4ABBD50068D0FC /* CustomTableViewCell.swift */,
 				50A35FA12A4AB6D70068D0FC /* ViewController.swift */,
+				50FC88D22A4C1D7B005A7D21 /* ViewController-Extension.swift */,
 				50A35FA62A4AB6D90068D0FC /* Assets.xcassets */,
 				50A35FAB2A4AB6D90068D0FC /* Info.plist */,
 			);
@@ -215,6 +218,7 @@
 				50A35FA22A4AB6D70068D0FC /* ViewController.swift in Sources */,
 				50A35F9E2A4AB6D70068D0FC /* AppDelegate.swift in Sources */,
 				50A35FB72A4ABBD50068D0FC /* CustomTableViewCell.swift in Sources */,
+				50FC88D32A4C1D7B005A7D21 /* ViewController-Extension.swift in Sources */,
 				50A35FA02A4AB6D70068D0FC /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
