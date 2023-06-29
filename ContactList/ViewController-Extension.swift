@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Realm
 import RealmSwift
 import SnapKit
 import RxCocoa
@@ -58,11 +59,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             guard let updatedName = nameTextField.text,
                   let updatedPhone = phoneTextField.text else { return }
 
-            // get the corresponding contact that needs to be updated
-            let contactToUpdate = contacts.where {
-                $0.name == self.people[selectedPersonIndexRow!].name
-            }
-
             do {
                 try self.realm.write {
                     // update the table values
@@ -70,9 +66,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                     self.people[selectedPersonIndexRow!].phone = updatedPhone
 
                     // update the realmDB values
-                    contactToUpdate[selectedPersonIndexRow!].name = updatedName
-                    contactToUpdate[selectedPersonIndexRow!].phone = updatedPhone
+                    let updatedContact = Contact(name: updatedName, phone: updatedPhone)
+                    self.realm.add(updatedContact, update: .modified)
                 }
+                self.realm.refresh()
             }
             catch let e {
                 print(e.localizedDescription)
@@ -82,11 +79,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         })
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .default) { _ in
-            let contactToUpdate = contacts.where {
-                $0.name == self.people[selectedPersonIndexRow!].name
-            }
-            print(contactToUpdate)
-            print(type(of: contactToUpdate))
             alert.dismiss(animated: true)
         })
         

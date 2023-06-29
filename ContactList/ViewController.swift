@@ -55,6 +55,7 @@ class ViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        print(realm.configuration.fileURL ?? "")
         super.viewDidLoad()
         try! realm.write {
             realm.deleteAll()
@@ -79,30 +80,6 @@ class ViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-50)
             make.width.equalTo(300)
-        }
-
-
-        let results = self.realm.objects(Contact.self)
-        self.notificationToken = results.observe { [weak self] (changes: RealmCollectionChange) in
-            guard let table = self?.table else { return }
-
-            switch changes {
-                case .initial:
-                    table.reloadData()
-                case .update(_, let deletions, let insertions, let modifications):
-                    table.performBatchUpdates({
-                        table.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0) }),
-                                         with: .automatic)
-                        table.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
-                                         with: .automatic)
-                        table.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
-                                         with: .automatic)
-                    }, completion: { finished in
-                        print(finished)
-                    })
-                case .error(let error):
-                    fatalError("\(error)")
-            }
         }
     }
 
